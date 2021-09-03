@@ -13,7 +13,7 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         value = slugify(self.name)
         self.slug = value
-        return self.super(args, kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = "posts_categories"
@@ -31,7 +31,7 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         value = slugify(self.title)
         self.slug = value
-        return self.super(args, kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = "posts_posts"
