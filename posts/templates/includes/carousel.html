@@ -1,0 +1,80 @@
+{% load static %}
+
+<!-- CAROUSEL -->
+<div class="container mt-3">
+    <div class="d-flex justify-content-center">
+      <h1>Trending</h1>
+    </div>
+    <div id="trendingPosts" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#trendingPosts" data-slide-to="0" class="active"></li>
+        <li data-target="#trendingPosts" data-slide-to="1"></li>
+        <li data-target="#trendingPosts" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner" style="height: 350px;">
+        <div class="carousel-item active">
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6">
+              <img src="{% static 'images/post6.jpg' %}" style="height: 300px;" alt="" class="img-fluid rounded-lg">
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-10 mb-3">
+              <h4>title</h4>
+              <p><b>Category</b><span class="text-muted">Date nodified</span></p>
+              <p>lorem-50</p>
+              <div class="d-flex">
+                <div>
+                  <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
+                </div>
+                <div class="ml-2">
+                  <h3>Author name</h3>
+                  <p>Designation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6">
+              <img src="{% static 'images/post7.jpg' %}" style="height: 300px;" alt="" class="img-fluid rounded-lg">
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-10 mb-3">
+              <h4>title</h4>
+              <p><b>Category</b><span class="text-muted">Date nodified</span></p>
+              <p>lorem-50</p>
+              <div class="d-flex">
+                <div>
+                  <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
+                </div>
+                <div class="ml-2">
+                  <h3>Author name</h3>
+                  <p>Designation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6">
+              <img src="{% static 'images/post3.jpg' %}" style="height: 300px;" alt="" class="img-fluid rounded-lg">
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-10 mb-3">
+              <h4>title</h4>
+              <p><b>Category</b><span class="text-muted">Date nodified</span></p>
+              <p>lorem-50</p>
+              <div class="d-flex">
+                <div>
+                  <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
+                </div>
+                <div class="ml-2">
+                  <h3>Author name</h3>
+                  <p>Designation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

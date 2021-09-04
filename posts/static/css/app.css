@@ -1,0 +1,21 @@
+.carousel-indicators li{
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background: black;
+    opacity: 1;
+    border: 0;
+}
+.carousel-indicators li.active {
+    background-color: orange;
+}
+
+.pill-left {
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.pill-right {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
