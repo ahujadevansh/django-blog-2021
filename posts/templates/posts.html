@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'body-content' %} 
+    {% for post in posts %}
+        <div class="container mt-3">
+            <div class="mb-3">
+            <article class="row media border rounded shadow p-3 my-2 bg-white">
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                <img src="{% static 'images/post7.jpg' %}" style="height: 300px;" alt="" class="img-fluid rounded-lg">
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-10">
+                <div class="d-flex">
+                    <div>
+                    <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
+                    </div>
+                    <div class="ml-2">
+                    <a href="{% url 'my_posts' %}"><h3>{{ post.author.username }}</h3></a>
+                    <p>Designation</p>
+                    </div>
+                </div>
+                <div>
+                    <a href="{% url 'post' post.slug %}"><h4>{{post.title|title}}</h4></a>
+                    <p><a href="#"><b>{{post.category}}</b></a>
+                        <span class="text-muted">{{ post.updated_at|date:"D d M Y" }}</span></p>
+                    {% if post.content|wordcount > 70 %}
+                        <p>{{ post.content|truncatewords:50 }}</p>
+                        <a href="{% url 'post' post.slug %}" class="text-muted">Read more</a>
+                    {% else %}
+                        <p>{{ post.content|truncatewords:50 }}</p>
+                    {% endif %}
+
+                </div>
+                </div>
+            </article>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock 'body-content' %}
