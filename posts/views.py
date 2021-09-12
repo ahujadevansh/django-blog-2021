@@ -1,5 +1,8 @@
+import datetime
+
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import BadRequest, PermissionDenied
 
 from .models import Category, Post
 from .forms import PostForm
@@ -42,6 +45,9 @@ def create(request):
 def update(request, slug):
     
     post = get_object_or_404(Post, slug=slug)
+    # from django.core.exceptions import PermissionDenied
+    if request.user != post.author:
+        raise PermissionDenied()
 
     if request.method == 'POST':
         form = PostForm(request.POST, instance=post)
@@ -55,6 +61,29 @@ def update(request, slug):
         'form': form,
     }
     return render(request, "create.html", context)
+
+
+@login_required
+def delete(request):
+    print("->", request.POST)
+    if request.method == 'POST':
+        print("->", request.POST)
+        post = get_object_or_404(Post, slug=request.POST.get("slug", None))
+        if request.user != post.author:
+            raise PermissionDenied()
+        
+        post.deleted_at = datetime.datetime.now()
+        post.save()
+        return redirect("my_posts")
+    else:
+        raise BadRequest()
+        
+#     path('delete/', posts_views.delete, name='delete'),
+
+
+        
+
+
 
 @login_required
 def my_posts(request):

@@ -1,3 +1,4 @@
+from posts.managers import PostManager
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
@@ -34,6 +35,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateField(null=True, blank=True)
+    objects = PostManager()
 
     def save(self, *args, **kwargs):
         value = slugify(self.title)
