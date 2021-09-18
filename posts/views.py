@@ -28,7 +28,7 @@ def index(request):
 def create(request):
     if request.method == 'POST':
 
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             form.instance.author = request.user
             post = form.save()
@@ -50,7 +50,7 @@ def update(request, slug):
         raise PermissionDenied()
 
     if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             # form.instance.author = request.user
             post = form.save()

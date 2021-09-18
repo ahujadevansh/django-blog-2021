@@ -30,7 +30,7 @@
     <div>
         <h1 class="text-center">{{post.title}}</h1>
         <div class="d-flex justify-content-center">
-            <img class="img-fluid rounded-lg shadow" style="height:70vh" src="{% static 'images/post3.jpg' %}" alt="">
+            <img class="img-fluid rounded-lg shadow" style="height:70vh" src="{{ post.cover_pic.url }}" alt="">
         </div>
         <div>
             {{post.content}}
