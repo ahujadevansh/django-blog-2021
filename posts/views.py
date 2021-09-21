@@ -1,3 +1,4 @@
+import os
 import datetime
 
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
@@ -9,7 +10,7 @@ from .forms import PostForm
 
 # Create your views here.
 def post(request, slug): 
-    # post = Post.objects.filter(slug = slug).first()
+    # post = Post.query.filter(slug = slug).first()
     # return HttpResponse(f"<h1> {post.title} </h1> <br> <p> {post.content}</p>")
     post = get_object_or_404(Post, slug=slug)
     context = {
@@ -18,7 +19,7 @@ def post(request, slug):
     return render(request, "post.html", context)
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.query.all()
     context = {
         'posts' : posts
     }
@@ -45,6 +46,7 @@ def create(request):
 def update(request, slug):
     
     post = get_object_or_404(Post, slug=slug)
+    cover_pic_path = post.cover_pic.path
     # from django.core.exceptions import PermissionDenied
     if request.user != post.author:
         raise PermissionDenied()
@@ -52,7 +54,6 @@ def update(request, slug):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
-            # form.instance.author = request.user
             post = form.save()
             return redirect("post", slug=post.slug)
     else:
@@ -65,9 +66,7 @@ def update(request, slug):
 
 @login_required
 def delete(request):
-    print("->", request.POST)
     if request.method == 'POST':
-        print("->", request.POST)
         post = get_object_or_404(Post, slug=request.POST.get("slug", None))
         if request.user != post.author:
             raise PermissionDenied()
@@ -77,10 +76,39 @@ def delete(request):
         return redirect("my_posts")
     else:
         raise BadRequest()
-        
-#     path('delete/', posts_views.delete, name='delete'),
 
+@login_required
+def trash(request):
 
+    posts = Post.objects.filter(author=request.user).exclude(deleted_at=None)
+    context = {
+        'posts':posts,
+    }
+    return render(request, "trash.html", context)
+
+@login_required
+def restore(request, slug):
+    if request.method == 'GET':
+        post = get_object_or_404(Post.objects, slug=slug)
+        if request.user != post.author:
+            raise PermissionDenied()
+     
+        post.deleted_at = None
+        post.save()
+        return redirect("my_posts")
+    else:
+        raise BadRequest()
+
+@login_required
+def permanent_delete(request):
+    if request.method == 'POST':
+        post = get_object_or_404(Post.objects, slug=request.POST.get("slug", None))
+        if request.user != post.author:
+            raise PermissionDenied()
+        post.delete()
+        return redirect("my_posts")
+    else:
+        raise BadRequest()
         
 
 
@@ -88,7 +116,7 @@ def delete(request):
 @login_required
 def my_posts(request):
 
-    posts = Post.objects.filter(author=request.user)
+    posts = Post.query.filter(author=request.user)
     context = {
         'posts':posts,
     }

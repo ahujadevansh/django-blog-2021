@@ -33,7 +33,7 @@
             <img class="img-fluid rounded-lg shadow" style="height:70vh" src="{{ post.cover_pic.url }}" alt="">
         </div>
         <div>
-            {{post.content}}
+            {{post.content|safe}}
         </div>
     </div>
 

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'body-content' %} 
+    <div class="container mt-3">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody> 
+                {% for post in posts %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ post.title }}</td>
+                        <td>
+                            <a href="{% url 'restore' post.slug %}" class="btn btn-primary">Restore</a>
+                            <form class="d-inline" action="{% url 'permanent_delete' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="slug" value="{{ post.slug }}">
+                                <button type="submit" class="btn btn-danger mx-1">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock 'body-content' %} 
+

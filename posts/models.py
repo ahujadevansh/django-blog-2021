@@ -49,7 +49,8 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateField(null=True, blank=True)
-    objects = PostManager()
+    objects = models.Manager()
+    query = PostManager()
 
     def save(self, *args, **kwargs):
         value = slugify(self.title)
@@ -67,6 +68,7 @@ class Post(models.Model):
         return self.title
 
     class Meta:
+        default_manager_name = "query"
         db_table = "posts_posts"
 
 # python manage.py makemigrations
