@@ -45,6 +45,7 @@ class Post(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     slug = models.SlugField(default='', editable=False, max_length=500)
     cover_pic = models.ImageField(default=settings.DEFAULT_PIC, upload_to=generate_cover_pic_path)
+    views = models.BigIntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -52,17 +53,26 @@ class Post(models.Model):
     objects = models.Manager()
     query = PostManager()
 
+    def increment_views(self):
+        self.views += 1
+        self.save()
+
     def save(self, *args, **kwargs):
         value = slugify(self.title)
         self.slug = value
-
+        old_cover_pic = None
+        if self.id:
+            old_cover_pic = Post.query.get(id=self.id).cover_pic
+        
+        new_cover_pic = self.cover_pic
         super().save(*args, **kwargs)
 
-        cover_pic = Image.open(self.cover_pic.path)
-        if cover_pic.height > 500 or cover_pic.width > 500:
-            ouput_size = (500, 500)
-            cover_pic.thumbnail(ouput_size)
-            cover_pic.save(self.cover_pic.path)
+        if old_cover_pic != new_cover_pic:
+            cover_pic = Image.open(self.cover_pic.path)
+            if cover_pic.height > 500 or cover_pic.width > 500:
+                ouput_size = (500, 500)
+                cover_pic.thumbnail(ouput_size)
+                cover_pic.save(self.cover_pic.path)
     
     def __str__(self) -> str:
         return self.title

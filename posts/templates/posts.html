@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block 'body-content' %} 
-    {% for post in posts %}
+    {% for post in page_obj %}
         <div class="container mt-3">
             <div class="mb-3">
             <article class="row media border rounded shadow p-3 my-2 bg-white">
@@ -38,4 +38,5 @@
             </div>
         </div>
     {% endfor %}
+    {% include 'includes/pagination.html' %}
 {% endblock 'body-content' %}

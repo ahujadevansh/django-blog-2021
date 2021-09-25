@@ -10,102 +10,27 @@
       <h1>Latest Posts</h1>
     </div>
     <div class="row">
-      <div class="col-lg-4 col-md-6 col-sm-8 my-2">
-        <div class="card border border-0">
-          <img class="card-img-top rounded-lg shadow-sm" style="height:250px" src="{% static 'images/post-1.jpg' %}" alt="Card image">
-          <div class="card-body">
-            <h4 class="card-title">title</h4>
-            <p><b>Category</b><span class="text-muted">Date nodified</span></p>
-            <p class="card-text">Some example text.</p>
-            <div class="d-flex">
-              <div>
-                <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
-              </div>
-              <div class="ml-2">
-                <h3>Author name</h3>
-                <p>Designation</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6 col-sm-8 my-2">
-        <div class="card border border-0">
-          <img class="card-img-top rounded-lg shadow-sm" style="height:250px" src="{% static 'images/post2.jpg' %}" alt="Card image">
-          <div class="card-body">
-            <h4 class="card-title">title</h4>
-            <p><b>Category</b><span class="text-muted">Date nodified</span></p>
-            <p class="card-text">Some example text.</p>
-            <div class="d-flex">
-              <div>
-                <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
-              </div>
-              <div class="ml-2">
-                <h3>Author name</h3>
-                <p>Designation</p>
+      {% for post in latest_posts %}
+        <div class="col-lg-4 col-md-6 col-sm-8 my-2">
+          <div class="card border border-0">
+            <img class="card-img-top rounded-lg shadow-sm" style="height:250px" src="{{ post.cover_pic.url }}" alt="Card image">
+            <div class="card-body">
+              <h4 class="card-title">title</h4>
+              <p><b>Category</b><span class="text-muted">Date nodified</span></p>
+              <p class="card-text">Some example text.</p>
+              <div class="d-flex">
+                <div>
+                  <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
+                </div>
+                <div class="ml-2">
+                  <h3>Author name</h3>
+                  <p>Designation</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-lg-4 col-md-6 col-sm-8 my-2">
-        <div class="card border border-0">
-          <img class="card-img-top rounded-lg shadow-sm" style="height:250px" src="{% static 'images/post3.jpg' %}" alt="Card image">
-          <div class="card-body">
-            <h4 class="card-title">title</h4>
-            <p><b>Category</b><span class="text-muted">Date nodified</span></p>
-            <p class="card-text">Some example text.</p>
-            <div class="d-flex">
-              <div>
-                <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
-              </div>
-              <div class="ml-2">
-                <h3>Author name</h3>
-                <p>Designation</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6 col-sm-8 my-2">
-        <div class="card border border-0">
-          <img class="card-img-top rounded-lg shadow-sm" style="height:250px" src="{% static 'images/post4.jpg' %}" alt="Card image">
-          <div class="card-body">
-            <h4 class="card-title">title</h4>
-            <p><b>Category</b><span class="text-muted">Date nodified</span></p>
-            <p class="card-text">Some example text.</p>
-            <div class="d-flex">
-              <div>
-                <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
-              </div>
-              <div class="ml-2">
-                <h3>Author name</h3>
-                <p>Designation</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6 col-sm-8 my-2">
-        <div class="card border border-0">
-          <img class="card-img-top rounded-lg shadow-sm" style="height:250px" src="{% static 'images/post7.jpg' %}" alt="Card image">
-          <div class="card-body">
-            <h4 class="card-title">title</h4>
-            <p><b>Category</b><span class="text-muted">Date nodified</span></p>
-            <p class="card-text">Some example text.</p>
-            <div class="d-flex">
-              <div>
-                <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
-              </div>
-              <div class="ml-2">
-                <h3>Author name</h3>
-                <p>Designation</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
+      {% endfor %}      
     </div>
   </div>
 

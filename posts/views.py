@@ -1,9 +1,12 @@
 import os
 import datetime
+from django.core import paginator
 
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest, PermissionDenied
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .models import Category, Post
 from .forms import PostForm
@@ -13,15 +16,18 @@ def post(request, slug):
     # post = Post.query.filter(slug = slug).first()
     # return HttpResponse(f"<h1> {post.title} </h1> <br> <p> {post.content}</p>")
     post = get_object_or_404(Post, slug=slug)
+    post.increment_views()
     context = {
         'post':post,
     }
     return render(request, "post.html", context)
 
 def index(request):
-    posts = Post.query.all()
+    latest_posts = Post.query.all().order_by("-created_at")[:6]
+    treanding_posts = Post.query.all().order_by("-views")[:3]
     context = {
-        'posts' : posts
+        'latest_posts': latest_posts,
+        'treanding_posts': treanding_posts
     }
     return render(request, 'index.html', context)
 
@@ -111,14 +117,37 @@ def permanent_delete(request):
         raise BadRequest()
         
 
-
-
 @login_required
 def my_posts(request):
 
+    # from django.core.paginator import Paginator
     posts = Post.query.filter(author=request.user)
+    paginator = Paginator(posts, 10)
+    is_paginated = paginator.num_pages > 1
+    page = request.GET.get("page", 1)
+    if int(page) > paginator.num_pages:
+        page = 1
+    page_obj = paginator.page(page)
     context = {
-        'posts':posts,
+        'is_paginated': is_paginated,
+        'page_obj':page_obj,
+    }
+    return render(request, "posts.html", context)
+    
+def search(request):
+
+    search = request.GET.get("search", "")
+    posts = Post.query.filter(Q(title__icontains=search) | Q(content__icontains=search))
+    paginator = Paginator(posts, 2)
+    is_paginated = paginator.num_pages > 1
+    page = request.GET.get("page", 1)
+    if int(page) > paginator.num_pages:
+        page = 1
+    page_obj = paginator.page(page)
+    context = {
+        'search':search,
+        'is_paginated': is_paginated,
+        'page_obj':page_obj,
     }
     return render(request, "posts.html", context)
     

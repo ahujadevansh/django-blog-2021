@@ -29,7 +29,7 @@
       <div class="d-flex align-items-center">
         <a class="navbar-brand" href="{% url 'posts' %}">Blog Project</a>
       </div>
-      <form class="form-inline">
+      <form action="{% url 'search' %}" class="form-inline">
         <div class="input-group">
           <input type="text" name="search" class="form-control pill-left" placeholder="Search">
           <div class="input-group-append">
