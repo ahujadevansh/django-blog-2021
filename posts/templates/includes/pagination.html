@@ -1,3 +1,5 @@
+{% load helper_tags %}
+
 {% if is_paginated %}
     <!-- Pagination -->
     <nav>
@@ -16,7 +18,7 @@
             </li>
         {% endif %}
         {% for page in page_obj.paginator.page_range %}
-          <li class="page-item mx-1">
+          <li class="page-item {{ page|active:page_obj.number }} mx-1">
             <a class="page-link rounded-circle" href="?page={{ page }}&search={{ search }}">{{ page }}</a>
           </li>
         {% endfor %}

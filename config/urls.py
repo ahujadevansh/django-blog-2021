@@ -18,8 +18,10 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf import settings
 from django.conf.urls.static import static
+from posts import views as posts_views
 
 urlpatterns = [
+    path('', posts_views.index),
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
     path('posts/', include('posts.urls')),

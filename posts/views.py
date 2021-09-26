@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib import messages
+
 
 from .models import Category, Post
 from .forms import PostForm
@@ -27,7 +29,8 @@ def index(request):
     treanding_posts = Post.query.all().order_by("-views")[:3]
     context = {
         'latest_posts': latest_posts,
-        'treanding_posts': treanding_posts
+        'treanding_posts': treanding_posts,
+        'tab': 'dashboard',
     }
     return render(request, 'index.html', context)
 
@@ -39,12 +42,15 @@ def create(request):
         if form.is_valid():
             form.instance.author = request.user
             post = form.save()
+            messages.success(request, f"{post.title} post create successfully")
             return redirect("post", slug=post.slug)
+        messages.error(request, f"Error while Creating post")
     else:
         form = PostForm()
     
     context = {
         'form': form,
+        'tab': 'create',
     }
     return render(request, "create.html", context)
 
@@ -61,7 +67,9 @@ def update(request, slug):
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             post = form.save()
+            messages.success(request, f"{post.title} updated successfully")
             return redirect("post", slug=post.slug)
+        messages.error(request, "Error occured while updating post")
     else:
         form = PostForm(instance=post)
     context = {
@@ -79,6 +87,7 @@ def delete(request):
         
         post.deleted_at = datetime.datetime.now()
         post.save()
+        messages.success(request, f"{post.title} Post Moved to trash")
         return redirect("my_posts")
     else:
         raise BadRequest()
@@ -101,6 +110,7 @@ def restore(request, slug):
      
         post.deleted_at = None
         post.save()
+        messages.success(request, f"{post.title} Restored")
         return redirect("my_posts")
     else:
         raise BadRequest()
@@ -112,6 +122,7 @@ def permanent_delete(request):
         if request.user != post.author:
             raise PermissionDenied()
         post.delete()
+        messages.success(request, f"{post.title} Post Deleted")
         return redirect("my_posts")
     else:
         raise BadRequest()
@@ -131,6 +142,7 @@ def my_posts(request):
     context = {
         'is_paginated': is_paginated,
         'page_obj':page_obj,
+        'tab': 'my_post',
     }
     return render(request, "posts.html", context)
     
@@ -138,6 +150,8 @@ def search(request):
 
     search = request.GET.get("search", "")
     posts = Post.query.filter(Q(title__icontains=search) | Q(content__icontains=search))
+    if not posts:
+        messages.info(request, f"No Posts found for search result - {search}")
     paginator = Paginator(posts, 2)
     is_paginated = paginator.num_pages > 1
     page = request.GET.get("page", 1)

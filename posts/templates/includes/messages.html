@@ -1,0 +1,16 @@
+{% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <div class="alert alert-danger alert-dismissible">
+            {% elif message.tags == 'debug' %}
+            <div class="alert alert-secondary alert-dismissible">
+            {% else %}
+            <div class="alert alert-{{message.tags}} alert-dismissible">
+            {% endif %}
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{message}}</strong>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

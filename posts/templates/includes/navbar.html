@@ -1,18 +1,29 @@
+{% load helper_tags %}
 <!-- NAVBAR -->
 <div class="pb-3 pt-3 border-bottom">
   <div class="container">
     <nav class="nav navbar-expand-sm navbar-light justify-content-between">
       <ul class="navbar-nav">
         <li class="nav-item">
+          {% if tab == 'dashboard' %}
           <a class="nav-link active" href="{% url 'posts' %}">Dashboard</a>
+          {% else %}
+          <a class="nav-link" href="{% url 'posts' %}">Dashboard</a>
+          {% endif %}
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'my_posts' %}">My Posts</a>
-        </li>
-        
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'create' %}">Create Post</a>
-        </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            {% if tab == 'my_post' %}
+            <a class="nav-link active" href="{% url 'my_posts' %}">My Posts</a>
+            {% else %}
+            <a class="nav-link" href="{% url 'my_posts' %}">My Posts </a>
+            {% endif %}
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link {{ tab|active:'create' }}" href="{% url 'create' %}">Create Post</a>
+          </li>
+        {% endif %}
     
         <!-- Dropdown -->
         <li class="nav-item dropdown">
@@ -25,6 +36,17 @@
             <a class="dropdown-item" href="#">Link 3</a>
           </div>
         </li>
+
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Log in</a>
+          </li>
+        {% endif %}
+
       </ul>
       <div class="d-flex align-items-center">
         <a class="navbar-brand" href="{% url 'posts' %}">Blog Project</a>
