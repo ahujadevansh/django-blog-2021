@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 
 from .models import Category, Post
-from .forms import PostForm
+from .forms import CategoryForm, PostForm
 
 # Create your views here.
 def post(request, slug): 
@@ -68,7 +68,6 @@ def update(request, slug):
         'form': form,
     }
     return render(request, "create.html", context)
-
 
 @login_required
 def delete(request):
@@ -151,4 +150,36 @@ def search(request):
     }
     return render(request, "posts.html", context)
     
-    
+def category(request):
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = CategoryForm(request.POST)
+            if form.is_valid():
+                form.save()
+                form = CategoryForm()
+        else:
+            return redirect('login')
+    else:
+        form = CategoryForm()
+
+    categories = Category.query.all()
+    context = {
+        'categories': categories,
+        'form': form
+    }
+    return render(request, 'categories.html', context)
+
+@login_required
+def category_permanent_delete(request):
+    if request.method == 'POST':
+        category = get_object_or_404(Category.objects, slug=request.POST.get("slug", None))
+        if not request.user.is_staff:
+            raise PermissionDenied()
+        if Post.objects.filter(category=category).count() > 0:
+            print(Post.objects.filter(category=category)[1])
+            raise PermissionDenied()
+        category.delete()
+        return redirect("category")
+    else:
+        raise BadRequest()

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block 'body-content' %} 
+    <!-- Posts -->
+    <div class="container mt-3">
+        <div class="my-2">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div id="div_id_name" class="col-md-10"> 
+                        {{ form.name|as_crispy_field }}
+                    </div>    
+                    <div class="col-md-2">    
+                        {% if user.is_authenticated and user.is_staff %}
+                            <button type="submit" class="btn btn-primary btn-block">Add</button>
+                        {% else %}
+                            <button class="btn btn-secondary btn-block" disabled>Add</button>
+                        {% endif %}
+                    </div>
+                </div>            
+            </form>
+        </div>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Category Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="">
+                {% for category in categories %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td id="category_name_{{ forloop.counter }}">{{ category.name }}</td>
+                        <td>           
+                            {% if user.is_authenticated and user.is_staff %}
+                                <button onclick="category_update(this)" class="btn btn-primary" data-id="{{ forloop.counter }}">Update</button>
+                                <form class="d-inline" action="{% url 'caterogy_delete' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="slug" value="{{ category.slug }}">
+                                    <button type="submit" class="btn btn-danger mx-1">Delete</button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-secondary" disabled>Update</button>
+                                <button class="btn btn-secondary mx-1" disabled>Delete</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock 'body-content' %}
+
+{% block 'javascript' %}
+    <script src="{% static 'js/category.js' %}"></script>
+{% endblock 'javascript' %}
