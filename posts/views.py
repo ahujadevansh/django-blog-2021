@@ -123,7 +123,7 @@ def my_posts(request):
     posts = Post.query.filter(author=request.user)
     paginator = Paginator(posts, 10)
     is_paginated = paginator.num_pages > 1
-    page = request.GET.get("page", 1)
+    page = request.GET.get("page", 10)
     if int(page) > paginator.num_pages:
         page = 1
     page_obj = paginator.page(page)
@@ -137,7 +137,7 @@ def search(request):
 
     search = request.GET.get("search", "")
     posts = Post.query.filter(Q(title__icontains=search) | Q(content__icontains=search))
-    paginator = Paginator(posts, 2)
+    paginator = Paginator(posts, 10)
     is_paginated = paginator.num_pages > 1
     page = request.GET.get("page", 1)
     if int(page) > paginator.num_pages:
@@ -164,8 +164,15 @@ def category(request):
         form = CategoryForm()
 
     categories = Category.query.all()
+    paginator = Paginator(categories, 10)
+    is_paginated = paginator.num_pages > 1
+    page = request.GET.get("page", 1)
+    if int(page) > paginator.num_pages:
+        page = 1
+    page_obj = paginator.page(page)
     context = {
-        'categories': categories,
+        'page_obj': page_obj,
+        'is_paginated': is_paginated,
         'form': form
     }
     return render(request, 'categories.html', context)
