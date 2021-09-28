@@ -14,6 +14,7 @@ urlpatterns = [
     path('permanent_delete/', posts_views.permanent_delete, name='permanent_delete'),
     path('search/', posts_views.search, name='search'),
     path('category/', posts_views.category, name='category'),
+    path('category_update/', posts_views.category_update, name="category_update"),
     path('category/delete/', posts_views.category_permanent_delete, name="caterogy_delete"),
     # Put it in the last
     path('<str:slug>/', posts_views.post, name="post"),

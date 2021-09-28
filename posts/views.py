@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q
-
+from django.contrib import messages
 from .models import Category, Post
 from .forms import CategoryForm, PostForm
 
@@ -151,16 +151,16 @@ def search(request):
     return render(request, "posts.html", context)
     
 def category(request):
-
+    form = None
     if request.method == 'POST':
         if request.user.is_authenticated:
             form = CategoryForm(request.POST)
             if form.is_valid():
-                form.save()
-                form = CategoryForm()
+                category = form.save()
+                messages.success(request, category.name + " Added Succesfully")
         else:
             return redirect('login')
-    else:
+    if(not form):
         form = CategoryForm()
 
     categories = Category.query.all()
@@ -171,15 +171,32 @@ def category(request):
     return render(request, 'categories.html', context)
 
 @login_required
+def category_update(request):
+
+    if not request.user.is_staff:
+        raise PermissionDenied()
+
+    if request.method == 'POST':
+        category = get_object_or_404(Category, slug=request.POST.get("slug", None))
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            category = form.save()
+            messages.success(request, category.name + " Updated Succesfully")
+            return redirect("category")
+    else:
+        raise BadRequest()
+
+@login_required
 def category_permanent_delete(request):
     if request.method == 'POST':
         category = get_object_or_404(Category.objects, slug=request.POST.get("slug", None))
         if not request.user.is_staff:
             raise PermissionDenied()
         if Post.objects.filter(category=category).count() > 0:
-            print(Post.objects.filter(category=category)[1])
-            raise PermissionDenied()
+            messages.error(request, category.name + " cannot be deleted. It conntains some posts")
+            return redirect("category")
         category.delete()
+        messages.success(request, category.name + " Deleted Succesfully")
         return redirect("category")
     else:
         raise BadRequest()
