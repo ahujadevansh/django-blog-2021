@@ -3,7 +3,7 @@ import datetime
 
 from PIL import Image
 
-from posts.managers import PostManager
+from posts.managers import PostManager, CategoryManager
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
@@ -17,6 +17,8 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateField(null=True, blank=True)
+    objects = models.Manager()
+    query = CategoryManager()
 
     def save(self, *args, **kwargs):
         value = slugify(self.name)
@@ -27,6 +29,7 @@ class Category(models.Model):
         return self.name
 
     class Meta:
+        default_manager_name = "query"
         db_table = "posts_categories"
         verbose_name_plural = "Categories"
 

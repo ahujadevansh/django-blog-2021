@@ -9,9 +9,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
 
-
 from .models import Category, Post
-from .forms import PostForm
+from .forms import CategoryForm, PostForm
 
 # Create your views here.
 def post(request, slug): 
@@ -76,7 +75,6 @@ def update(request, slug):
         'form': form,
     }
     return render(request, "create.html", context)
-
 
 @login_required
 def delete(request):
@@ -152,7 +150,7 @@ def search(request):
     posts = Post.query.filter(Q(title__icontains=search) | Q(content__icontains=search))
     if not posts:
         messages.info(request, f"No Posts found for search result - {search}")
-    paginator = Paginator(posts, 2)
+    paginator = Paginator(posts, 10)
     is_paginated = paginator.num_pages > 1
     page = request.GET.get("page", 1)
     if int(page) > paginator.num_pages:
@@ -165,4 +163,60 @@ def search(request):
     }
     return render(request, "posts.html", context)
     
-    
+def category(request):
+    form = None
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = CategoryForm(request.POST)
+            if form.is_valid():
+                category = form.save()
+                messages.success(request, category.name + " Added Succesfully")
+        else:
+            return redirect('login')
+    if(not form):
+        form = CategoryForm()
+
+    categories = Category.query.all()
+    paginator = Paginator(categories, 10)
+    is_paginated = paginator.num_pages > 1
+    page = request.GET.get("page", 1)
+    if int(page) > paginator.num_pages:
+        page = 1
+    page_obj = paginator.page(page)
+    context = {
+        'page_obj': page_obj,
+        'is_paginated': is_paginated,
+        'form': form
+    }
+    return render(request, 'categories.html', context)
+
+@login_required
+def category_update(request):
+
+    if not request.user.is_staff:
+        raise PermissionDenied()
+
+    if request.method == 'POST':
+        category = get_object_or_404(Category, slug=request.POST.get("slug", None))
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            category = form.save()
+            messages.success(request, category.name + " Updated Succesfully")
+            return redirect("category")
+    else:
+        raise BadRequest()
+
+@login_required
+def category_permanent_delete(request):
+    if request.method == 'POST':
+        category = get_object_or_404(Category.objects, slug=request.POST.get("slug", None))
+        if not request.user.is_staff:
+            raise PermissionDenied()
+        if Post.objects.filter(category=category).count() > 0:
+            messages.error(request, category.name + " cannot be deleted. It conntains some posts")
+            return redirect("category")
+        category.delete()
+        messages.success(request, category.name + " Deleted Succesfully")
+        return redirect("category")
+    else:
+        raise BadRequest()
