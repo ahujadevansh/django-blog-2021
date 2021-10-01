@@ -15,13 +15,13 @@ class Profile(models.Model):
         if filename != settings.DEFAULT_PIC:
             base_filename, file_extension = os.path.splitext(filename)
             filename = (f'{self.user.username}{file_extension}')
-            return f'post_pics/{filename}'
+            return f'profile_pics/{filename}'
         
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_pic = models.ImageField(default=settings.DEFAULT_PIC, upload_to=profile_pic_path)
     date_Of_birth = models.DateField(null=True)
     address = models.TextField(null=True)    
-    Gender = models.CharField(null='Male', max_length=10,
+    gender = models.CharField(default='Male', max_length=10,
                               choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
     
     def __str__(self):

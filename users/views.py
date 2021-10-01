@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .forms import ProfileUpdateForm, UserRegisterForm, UserUpdateForm
 
@@ -10,6 +11,8 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             return redirect('login')
+        else:
+            messages.error(request, "Please Fill Data Properly.")
     else:
         form = UserRegisterForm()
     return render(request,'register.html',{'form':form})
@@ -24,12 +27,15 @@ def profile(request):
             p_form.save()
             u_form.save()
             return redirect('profile')
+        else:
+            messages.error(request, "Please Fill Data Properly.")
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
     context = {
         'u_form' : u_form,
         'p_form' : p_form,
+        'tab': 'profile'
     }
     return render(request,'profile.html',context)
 

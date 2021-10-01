@@ -34,7 +34,9 @@
                 {% for category in page_obj %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ category.name }}</td>
+                        <td>
+                           <a href="{% url 'post_category' category.slug %}"> {{ category.name }}</a>
+                        </td>
                         <td class="text-center">           
                             {% if user.is_authenticated and user.is_staff %}
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateModal" data-category-name="{{ category.name }}" data-category-slug="{{ category.slug }}">

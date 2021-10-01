@@ -18,17 +18,29 @@ def post(request, slug):
     # return HttpResponse(f"<h1> {post.title} </h1> <br> <p> {post.content}</p>")
     post = get_object_or_404(Post, slug=slug)
     post.increment_views()
+    related_posts = Post.query.filter(author=post.author)[:3]
     context = {
         'post':post,
+        'related_posts': related_posts,
     }
     return render(request, "post.html", context)
 
 def index(request):
     latest_posts = Post.query.all().order_by("-created_at")[:6]
     treanding_posts = Post.query.all().order_by("-views")[:3]
+    category_1 = Category.query.all()[:1]
+    category_2 = Category.query.all()[1:2]
+    post_category_1 = Post.query.filter(category=category_1)[:3]
+    post_category_2 = Post.query.filter(category=category_2)[:3]
+
+
     context = {
         'latest_posts': latest_posts,
         'treanding_posts': treanding_posts,
+        'category_1': category_1,
+        'category_2': category_2,
+        'post_category_1': post_category_1,
+        'post_category_2': post_category_2,
         'tab': 'dashboard',
     }
     return render(request, 'index.html', context)
@@ -51,7 +63,7 @@ def create(request):
         'form': form,
         'tab': 'create',
     }
-    return render(request, "create.html", context)
+    return render(request, "form.html", context)
 
 @login_required
 def update(request, slug):
@@ -74,7 +86,7 @@ def update(request, slug):
     context = {
         'form': form,
     }
-    return render(request, "create.html", context)
+    return render(request, "form.html", context)
 
 @login_required
 def delete(request):
@@ -129,7 +141,6 @@ def permanent_delete(request):
 @login_required
 def my_posts(request):
 
-    # from django.core.paginator import Paginator
     posts = Post.query.filter(author=request.user)
     paginator = Paginator(posts, 10)
     is_paginated = paginator.num_pages > 1
@@ -144,6 +155,23 @@ def my_posts(request):
     }
     return render(request, "posts.html", context)
     
+def post_category(request, slug):
+
+    category = get_object_or_404(Category, slug=slug)
+    posts = Post.query.filter(category=category)
+    paginator = Paginator(posts, 10)
+    is_paginated = paginator.num_pages > 1
+    page = request.GET.get("page", 1)
+    if int(page) > paginator.num_pages:
+        page = 1
+    page_obj = paginator.page(page)
+    context = {
+        'is_paginated': is_paginated,
+        'page_obj':page_obj,
+    }
+    return render(request, "posts.html", context)
+    
+
 def search(request):
 
     search = request.GET.get("search", "")
@@ -162,6 +190,7 @@ def search(request):
         'page_obj':page_obj,
     }
     return render(request, "posts.html", context)
+    
     
 def category(request):
     form = None
@@ -186,7 +215,8 @@ def category(request):
     context = {
         'page_obj': page_obj,
         'is_paginated': is_paginated,
-        'form': form
+        'form': form,
+        'tab': 'categories',
     }
     return render(request, 'categories.html', context)
 

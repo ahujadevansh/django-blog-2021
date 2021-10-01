@@ -7,32 +7,38 @@
             <div class="mb-3">
             <article class="row media border rounded shadow p-3 my-2 bg-white">
                 <div class="col-lg-4 col-md-4 col-sm-6">
-                <img src="{{ post.cover_pic.url }}" style="height: 300px;" alt="" class="img-fluid rounded-lg">
+                    <img src="{{ post.cover_pic.url }}" style="height: 300px;" alt="" class="img-fluid rounded-lg">
                 </div>
                 <div class="col-lg-8 col-md-8 col-sm-10">
-                <div class="d-flex">
+                    <div class="d-flex">
+                        <div>
+                          <img src="{{ post.author.profile.profile_pic.url }}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
+                        </div>
+                        <div class="ml-2">
+                          <h3>{{post.author.get_full_name|title}}</h3>
+                        </div>
+                        {% if post.author == user %}
+                            <div class="ml-auto">
+                                <a href="{% url 'update' post.slug %}" class="btn btn-outline-info mx-1">Update</a>
+                                <form class="d-inline" action="{% url 'delete' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="slug" value="{{ post.slug }}">
+                                    <button type="submit" class="btn btn-outline-danger mx-1">Delete</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                      </div>
                     <div>
-                    <img src="{% static 'images/author.jpg' %}" alt="" class="img-fluid rounded-circle" style="height: 7vh;">
+                        <a href="{% url 'post' post.slug %}"><h4>{{post.title|title}}</h4></a>
+                        <p><a href="#"><b>{{post.category}}</b></a>
+                            <span class="text-muted">{{ post.updated_at|date:"D d M Y" }}</span></p>
+                        {% if post.content|wordcount > 70 %}
+                            <p>{{ post.content|safe|truncatewords_html:50 }}</p>
+                            <a href="{% url 'post' post.slug %}" class="text-muted">Read more</a>
+                        {% else %}
+                            <p>{{ post.content|safe|truncatewords_html:50 }}</p>
+                        {% endif %}
                     </div>
-                    <div class="ml-2">
-                    <a href="{% url 'my_posts' %}"><h3>{{ post.author.username }}</h3></a>
-                    <p>Designation</p>
-                    </div>
-                </div>
-                <div>
-                    <a href="{% url 'post' post.slug %}"><h4>{{post.title|title}}</h4></a>
-                    <p><a href="#"><b>{{post.category}}</b></a>
-                        <span class="text-muted">{{ post.updated_at|date:"D d M Y" }}</span></p>
-                    {% if post.content|wordcount > 70 %}
-                        <p>{{ post.content|safe|truncatewords_html:50 }}</p>
-                        <a href="{% url 'post' post.slug %}" class="text-muted">Read more</a>
-                    {% else %}
-                        <p>{{ post.content|safe|truncatewords_html:50 }}</p>
-                    {% endif %}
-                    <!--  -->
-
-
-                </div>
                 </div>
             </article>
             </div>

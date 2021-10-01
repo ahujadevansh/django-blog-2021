@@ -9,5 +9,10 @@
             {{ form|crispy }}
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
+        <div class="border-top mt-3">
+            <small class="text-muted">
+                Don't Have An Account? <a class="ml-2" href="{% url 'register' %}">Regiter Now</a>
+            </small>
+        </div>
     </div>
 {% endblock 'body-content' %} 

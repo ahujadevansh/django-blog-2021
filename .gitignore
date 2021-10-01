@@ -1,5 +1,6 @@
 media_cdn/
-
+static_cdn/
+etc/config.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

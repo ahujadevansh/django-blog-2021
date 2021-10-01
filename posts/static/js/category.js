@@ -7,5 +7,4 @@ $('#updateModal').on('show.bs.modal', function (event) {
     modal.find('.modal-title').text('Update Category ' + name)
     modal.find('.modal-body #id_name').val(name)
     modal.find('.modal-body #id_category_update_slug').val(slug)
-
-})
+});

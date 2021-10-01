@@ -5,10 +5,10 @@
 {% block 'body-content' %} 
     
     <div class="container">
-        <div class="media border rounded shadow p-3 m-2">
+        <div class="media border rounded shadow p-3">
             <img class="img-thumbnail rounded-circle img-fluid" style="height:125px;width:125px" src="{{ user.profile.profile_pic.url }}" alt="user profile pic">
             <div class="media-body p-4">
-                <h2>{{user.first_name|title}} {{user.last_name|title}}</h2>
+                <h2>{{user.get_full_name|title}}</h2>
                 <p>{{ user.username }}</p>
             </div>
         </div>
