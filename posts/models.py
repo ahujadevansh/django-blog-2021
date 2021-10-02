@@ -65,7 +65,7 @@ class Post(models.Model):
         self.slug = value
         old_cover_pic = None
         if self.id:
-            old_cover_pic = Post.query.get(id=self.id).cover_pic
+            old_cover_pic = Post.objects.get(id=self.id).cover_pic
         
         new_cover_pic = self.cover_pic
         super().save(*args, **kwargs)
